@@ -18,9 +18,11 @@ namespace QuanLyTTNgoaiNgu.Models
         [ForeignKey("GIANGVIEN")]
         [Required]
         public int MaGiangVien { get; set; }
+        [ForeignKey("KHOAHOC")]
+        [Required]
+        public int MaKhoaHoc { get; set; }
         public ICollection<PHIEUDANGKY>? PHIEUDANGKYs { get; set; }
         public virtual GIANGVIEN? GIANGVIENs { get; set; }
-
         public virtual KHOAHOC? KHOAHOCs { get; set; }
       
     }
