@@ -17,7 +17,7 @@ namespace QuanLyTTNgoaiNgu.Models
         public string SoDienThoai { get; set; }
 
         [Required]
-        [StringLength(10)]
+        [StringLength(20)]
         public string ChuyenMon { get; set; }
         [Required]
         [StringLength(20)]
@@ -30,6 +30,6 @@ namespace QuanLyTTNgoaiNgu.Models
 
         public virtual ICollection<LOPHOC>?LOPHOCs { get; set; }
 
-
+        public virtual TAIKHOAN? TAIKHOAN { get; set; }
     }
 }

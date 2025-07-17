@@ -8,7 +8,7 @@ namespace QuanLyTTNgoaiNgu.Models
         public int MaKhoaHoc { get; set; }
 
         [Required]
-        [StringLength(20)]
+        [StringLength(30)]
         public string TenKhoaHoc { get; set; }
         [Required]
         public double MucHocPhi {  get; set; }

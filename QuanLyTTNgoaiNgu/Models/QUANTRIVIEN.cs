@@ -16,5 +16,6 @@ namespace QuanLyTTNgoaiNgu.Models
         [Required]
         public int MaTaiKhoan {  get; set; }
 
+         public virtual TAIKHOAN? TAIKHOANS { get; set; }
     }
 }

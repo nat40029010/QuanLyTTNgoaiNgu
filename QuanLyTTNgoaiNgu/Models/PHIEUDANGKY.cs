@@ -18,6 +18,8 @@ namespace QuanLyTTNgoaiNgu.Models
         [Required]
         [ForeignKey("LOPHOC")]
         public int MaLopHoc {  get; set; }
-        public virtual LOPHOC ? LOPHOCs {  get; set; }
+        public virtual LOPHOC ? LOPHOC {  get; set; }
+        public virtual HOCVIEN? HOCVIEN { get; set; }
+        public virtual HOCPHI? HOCPHI { get; set; }
     }
 }

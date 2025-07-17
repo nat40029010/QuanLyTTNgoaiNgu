@@ -12,10 +12,12 @@ namespace QuanLyTTNgoaiNgu.Models
         [ForeignKey("PHIEUDANGKY")]
         public int MaDangKy {  get; set; }
 
-        [Required]
-        public DateTime NgayNop { get; set; }
+        
+        public DateTime? NgayNop { get; set; }
 
         [Required]
         public bool TrangThai {  get; set; }
+
+        public virtual PHIEUDANGKY? PHIEUDANGKY { get; set; }
     }
 }

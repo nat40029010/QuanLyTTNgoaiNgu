@@ -21,5 +21,8 @@ namespace QuanLyTTNgoaiNgu.Models
         [ForeignKey("LOPHOC")]
         public int MaLopHoc { get; set; }
 
+        public virtual HOCVIEN? HOCVIEN { get; set; }
+        public virtual LOPHOC? LOPHOC { get; set; }
+
     }
 }

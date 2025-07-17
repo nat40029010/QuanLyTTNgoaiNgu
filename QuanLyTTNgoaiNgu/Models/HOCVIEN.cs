@@ -28,6 +28,8 @@ namespace QuanLyTTNgoaiNgu.Models
         [ForeignKey("TAIKHOAN")]
         [Required]
         public int MaTaiKhoan { get; set; }
-        
+
+        public virtual ICollection<PHIEUDANGKY>? PHIEUDANGKYs { get; set; }
+        public virtual ICollection<KETQUAHOCTAP>? KETQUAHOCTAPs { get; set; }
     }
 }
