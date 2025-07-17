@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using QuanLyTTNgoaiNgu.Data;
-using QuanLyTTNgoaiNgu.Models;
+using QuanLyTTNgoaiNgu.Models.ViewModels;
 
 namespace QuanLyTTNgoaiNgu.Controllers
 {
@@ -18,136 +21,96 @@ namespace QuanLyTTNgoaiNgu.Controllers
         {
             _context = context;
         }
-
-        // GET: TAIKHOANs
-        public async Task<IActionResult> Index()
+        [HttpGet]
+        public IActionResult SignIn(string? returnUrl = null)
         {
-            return View(await _context.TAIKHOAN.ToListAsync());
+            ViewBag.ReturnUrl = returnUrl;
+            return View();
         }
 
-        // GET: TAIKHOANs/Details/5
-        public async Task<IActionResult> Details(int? id)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> SignIn(TAIKHOANViewModel vm, string? returnUrl = null)
         {
-            if (id == null)
+            if (!ModelState.IsValid) return View(vm);
+
+            var user = await _context.TAIKHOAN
+                .FirstOrDefaultAsync(u => u.TenDangNhap == vm.TenDangNhap && u.MatKhau == vm.MatKhau);
+
+            if (user == null)
             {
-                return NotFound();
+                ModelState.AddModelError("", "Sai tên đăng nhập hoặc mật khẩu");
+                return View(vm);
             }
 
-            var tAIKHOAN = await _context.TAIKHOAN
-                .FirstOrDefaultAsync(m => m.MaTaiKhoan == id);
-            if (tAIKHOAN == null)
+            var claims = new List<Claim>
             {
-                return NotFound();
-            }
+                new Claim(ClaimTypes.Name, user.TenDangNhap),
+                new Claim(ClaimTypes.Role, user.VaiTro),
+                new Claim("MaTaiKhoan", user.MaTaiKhoan.ToString())
+            };
 
-            return View(tAIKHOAN);
+            var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+            var principal = new ClaimsPrincipal(identity);
+
+            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal,
+                new AuthenticationProperties { IsPersistent = vm.GhiNho });
+
+            return RedirectToLocal(returnUrl);
         }
 
-        // GET: TAIKHOANs/Create
-        public IActionResult Create()
+        private IActionResult RedirectToLocal(string? returnUrl)
+        {
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                return Redirect(returnUrl);
+            return RedirectToAction("Index", "Home");
+        }
+
+        public async Task<IActionResult> SignOut()
+        {
+            await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+            return RedirectToAction("SignIn");
+        }
+
+        [HttpGet]
+        public IActionResult QuenMatKhau()
         {
             return View();
         }
 
-        // POST: TAIKHOANs/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MaTaiKhoan,TenDangNhap,MatKhau,VaiTro")] TAIKHOAN tAIKHOAN)
+        public async Task<IActionResult> QuenMatKhau(QuenMatKhauViewModel vm)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
+                return View(vm);
+
+            var user = await _context.TAIKHOAN
+                .Where(x => x.TenDangNhap == vm.TenDangNhap)
+                .FirstOrDefaultAsync();
+
+            if (user == null)
             {
-                _context.Add(tAIKHOAN);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                ModelState.AddModelError("", "Không tìm thấy tài khoản!");
+                return View(vm);
             }
-            return View(tAIKHOAN);
+
+            // Kiểm tra email (ví dụ bạn lưu email bên HOCVIEN)
+            var hocvien = await _context.HOCVIEN
+                .FirstOrDefaultAsync(hv => hv.MaTaiKhoan == user.MaTaiKhoan && hv.Email == vm.Email);
+
+            if (hocvien == null)
+            {
+                ModelState.AddModelError("", "Email không khớp với tài khoản!");
+                return View(vm);
+            }
+
+            // Trả về mật khẩu
+            vm.MatKhauHienThi = user.MatKhau;
+            ViewBag.ThanhCong = true;
+            return View(vm);
         }
 
-        // GET: TAIKHOANs/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
 
-            var tAIKHOAN = await _context.TAIKHOAN.FindAsync(id);
-            if (tAIKHOAN == null)
-            {
-                return NotFound();
-            }
-            return View(tAIKHOAN);
-        }
-
-        // POST: TAIKHOANs/Edit/5
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("MaTaiKhoan,TenDangNhap,MatKhau,VaiTro")] TAIKHOAN tAIKHOAN)
-        {
-            if (id != tAIKHOAN.MaTaiKhoan)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(tAIKHOAN);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TAIKHOANExists(tAIKHOAN.MaTaiKhoan))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(tAIKHOAN);
-        }
-
-        // GET: TAIKHOANs/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var tAIKHOAN = await _context.TAIKHOAN
-                .FirstOrDefaultAsync(m => m.MaTaiKhoan == id);
-            if (tAIKHOAN == null)
-            {
-                return NotFound();
-            }
-
-            return View(tAIKHOAN);
-        }
-
-        // POST: TAIKHOANs/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var tAIKHOAN = await _context.TAIKHOAN.FindAsync(id);
-            if (tAIKHOAN != null)
-            {
-                _context.TAIKHOAN.Remove(tAIKHOAN);
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool TAIKHOANExists(int id)
-        {
-            return _context.TAIKHOAN.Any(e => e.MaTaiKhoan == id);
-        }
     }
 }
