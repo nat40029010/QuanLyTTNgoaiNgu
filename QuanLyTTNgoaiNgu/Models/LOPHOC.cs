@@ -9,7 +9,7 @@ namespace QuanLyTTNgoaiNgu.Models
         public int MaLopHoc { get; set; }
 
         [Required]
-        [StringLength(20)]
+        [StringLength(30)]
         public string TenLop { get; set; }
 
         [Required]
