@@ -1,0 +1,107 @@
+﻿@model QuanLyTTNgoaiNgu.Models.ViewModels.QuenMatKhauViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Quên mật khẩu</title>
+    <style>
+        body {
+            background: #eef2f3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            font-family: Arial;
+            margin: 0;
+        }
+
+        .form-box {
+            background: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            width: 400px;
+        }
+
+            .form-box h2 {
+                text-align: center;
+                margin-bottom: 25px;
+            }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #3498db;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .text-danger {
+            color: red;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .matkhau {
+            background: #dff0d8;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            margin-top: 15px;
+            color: #3c763d;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form-box">
+        <h2>Quên mật khẩu</h2>
+        <form asp-action="QuenMatKhau" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input asp-for="TenDangNhap" placeholder="Tên đăng nhập" />
+            <span asp-validation-for="TenDangNhap" class="text-danger"></span>
+
+            <input asp-for="Email" placeholder="Email đã đăng ký" />
+            <span asp-validation-for="Email" class="text-danger"></span>
+
+            <button type="submit">Lấy lại mật khẩu</button>
+
+            @if (ViewBag.ThanhCong != null && Model.MatKhauHienThi != null)
+            {
+                <div class="matkhau">
+                    Mật khẩu của bạn: <br /><strong>@Model.MatKhauHienThi</strong>
+                </div>
+
+                <div style="margin-top: 15px; text-align: center;">
+                    <a asp-action="SignIn" asp-controller="TAIKHOANs"
+                       style="text-decoration:none; background:#3498db; color:white; padding:12px 20px; border-radius:8px; display:inline-block;">
+                        Quay lại đăng nhập
+                    </a>
+                </div>
+            }
+
+        </form>
+    </div>
+
+    @section Scripts {
+        <partial name="_ValidationScriptsPartial" />
+    }
+
+</body>
+</html>
