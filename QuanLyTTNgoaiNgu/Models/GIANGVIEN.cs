@@ -30,6 +30,6 @@ namespace QuanLyTTNgoaiNgu.Models
 
         public virtual ICollection<LOPHOC>?LOPHOCs { get; set; }
 
-
+        public virtual TAIKHOAN? TAIKHOAN { get; set; }
     }
 }

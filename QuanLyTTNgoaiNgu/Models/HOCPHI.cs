@@ -17,5 +17,7 @@ namespace QuanLyTTNgoaiNgu.Models
 
         [Required]
         public bool TrangThai {  get; set; }
+
+        public virtual PHIEUDANGKY? PHIEUDANGKY { get; set; }
     }
 }

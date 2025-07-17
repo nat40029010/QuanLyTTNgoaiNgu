@@ -18,6 +18,10 @@ namespace QuanLyTTNgoaiNgu.Models
         [StringLength(20)]
         public string VaiTro { get; set; }
 
- 
+        public virtual ICollection<HOCVIEN>? HOCVIENs{ get; set; }
+        public virtual ICollection<GIANGVIEN>? GIANGVIENs { get; set; }
+        public virtual ICollection<QUANTRIVIEN>? QUANTRIVIENs { get; set; }
+
+
     }
 }

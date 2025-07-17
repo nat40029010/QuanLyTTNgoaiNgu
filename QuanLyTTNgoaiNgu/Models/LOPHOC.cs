@@ -23,9 +23,10 @@ namespace QuanLyTTNgoaiNgu.Models
         [Required]
         public int MaKhoaHoc {  get; set; }
         public ICollection<PHIEUDANGKY>? PHIEUDANGKYs { get; set; }
-        public virtual GIANGVIEN? GIANGVIENs { get; set; }
+        public virtual GIANGVIEN? GIANGVIEN { get; set; }
 
-        public virtual KHOAHOC? KHOAHOCs { get; set; }
-      
+        public virtual KHOAHOC? KHOAHOC { get; set; }
+        public virtual ICollection<KETQUAHOCTAP>? KETQUAHOCTAPs{ get; set; }
+
     }
 }
