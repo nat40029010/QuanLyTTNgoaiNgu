@@ -56,7 +56,7 @@ namespace QuanLyTTNgoaiNgu.Controllers
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal,
                 new AuthenticationProperties { IsPersistent = vm.GhiNho });
 
-            return RedirectToLocal(returnUrl);
+            return RedirectToAction("Index", "Home");
         }
 
         private IActionResult RedirectToLocal(string? returnUrl)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using QuanLyTTNgoaiNgu.Models;
 
 namespace QuanLyTTNgoaiNgu.Controllers
 {
+  //  [Authorize(Roles = "Admin")]
     public class KHOAHOCsController : Controller
     {
         private readonly QuanLyTTNgoaiNguContext _context;
@@ -25,133 +27,73 @@ namespace QuanLyTTNgoaiNgu.Controllers
             return View(await _context.KHOAHOC.ToListAsync());
         }
 
-        // GET: KHOAHOCs/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        public IActionResult Create() => View();
 
-            var kHOAHOC = await _context.KHOAHOC
-                .FirstOrDefaultAsync(m => m.MaKhoaHoc == id);
-            if (kHOAHOC == null)
-            {
-                return NotFound();
-            }
-
-            return View(kHOAHOC);
-        }
-
-        // GET: KHOAHOCs/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
-
-        // POST: KHOAHOCs/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MaKhoaHoc,TenKhoaHoc,MucHocPhi,MoTa")] KHOAHOC kHOAHOC)
+        public async Task<IActionResult> Create(KHOAHOC kh)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(kHOAHOC);
+                _context.Add(kh);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(kHOAHOC);
+            return View(kh);
         }
 
-        // GET: KHOAHOCs/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var kHOAHOC = await _context.KHOAHOC.FindAsync(id);
-            if (kHOAHOC == null)
-            {
-                return NotFound();
-            }
-            return View(kHOAHOC);
+            var kh = await _context.KHOAHOC.FindAsync(id);
+            if (kh == null) return NotFound();
+            return View(kh);
         }
 
-        // POST: KHOAHOCs/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("MaKhoaHoc,TenKhoaHoc,MucHocPhi,MoTa")] KHOAHOC kHOAHOC)
+        public async Task<IActionResult> Edit(KHOAHOC kh)
         {
-            if (id != kHOAHOC.MaKhoaHoc)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(kHOAHOC);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!KHOAHOCExists(kHOAHOC.MaKhoaHoc))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
+                _context.Update(kh);
+                await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(kHOAHOC);
+            return View(kh);
         }
 
-        // GET: KHOAHOCs/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var kHOAHOC = await _context.KHOAHOC
-                .FirstOrDefaultAsync(m => m.MaKhoaHoc == id);
-            if (kHOAHOC == null)
-            {
-                return NotFound();
-            }
+            var khoahoc = await _context.KHOAHOC.FirstOrDefaultAsync(m => m.MaKhoaHoc == id);
+            if (khoahoc == null) return NotFound();
 
-            return View(kHOAHOC);
+            return View(khoahoc); // View Delete.cshtml
         }
 
-        // POST: KHOAHOCs/Delete/5
+        // POST: KHOAHOC/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var kHOAHOC = await _context.KHOAHOC.FindAsync(id);
-            if (kHOAHOC != null)
+            var khoahoc = await _context.KHOAHOC.FindAsync(id);
+            if (khoahoc != null)
             {
-                _context.KHOAHOC.Remove(kHOAHOC);
+                _context.KHOAHOC.Remove(khoahoc);
+                await _context.SaveChangesAsync();
             }
-
-            await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool KHOAHOCExists(int id)
+        // Quản lý lớp học theo khóa học
+        public async Task<IActionResult> LopHoc(int id)
         {
-            return _context.KHOAHOC.Any(e => e.MaKhoaHoc == id);
+            var kh = await _context.KHOAHOC.Include(k => k.LOPHOCs).FirstOrDefaultAsync(k => k.MaKhoaHoc == id);
+            if (kh == null) return NotFound();
+            ViewBag.TenKhoaHoc = kh.TenKhoaHoc;
+            ViewBag.MaKhoaHoc = kh.MaKhoaHoc;
+            return View(kh.LOPHOCs?.ToList());
         }
     }
 }
