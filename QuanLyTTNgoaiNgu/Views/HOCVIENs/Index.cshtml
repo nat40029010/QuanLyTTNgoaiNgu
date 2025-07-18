@@ -1,65 +1,46 @@
 ﻿@model IEnumerable<QuanLyTTNgoaiNgu.Models.HOCVIEN>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Danh sách học viên";
 }
 
-<h1>Index</h1>
+<h2 class="mb-3">@ViewData["Title"]</h2>
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a class="btn btn-success" asp-action="Create">Thêm học viên mới</a>
 </p>
-<table class="table">
-    <thead>
+
+<table class="table table-bordered table-striped">
+    <thead class="thead-dark">
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.HoTen)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SoDienThoai)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.NgaySinh)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DiaChi)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MaTaiKhoan)
-            </th>
-            <th></th>
+            <th>@Html.DisplayNameFor(model => model.HoTen)</th>
+            <th>@Html.DisplayNameFor(model => model.SoDienThoai)</th>
+            <th>@Html.DisplayNameFor(model => model.NgaySinh)</th>
+            <th>@Html.DisplayNameFor(model => model.Email)</th>
+            <th>@Html.DisplayNameFor(model => model.DiaChi)</th>
+            <th>@Html.DisplayNameFor(model => model.MaTaiKhoan)</th>
+            <th>Hành động</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.HoTen)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SoDienThoai)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.NgaySinh)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DiaChi)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MaTaiKhoan)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.MaHocVien">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.MaHocVien">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.MaHocVien">Delete</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@Html.DisplayFor(modelItem => item.HoTen)</td>
+                <td>@Html.DisplayFor(modelItem => item.SoDienThoai)</td>
+                <td>@item.NgaySinh.ToString("dd/MM/yyyy")</td>
+                <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                <td>@Html.DisplayFor(modelItem => item.DiaChi)</td>
+                <td>@Html.DisplayFor(modelItem => item.MaTaiKhoan)</td>
+                <td>
+                    <a class="btn btn-info btn-sm" asp-action="DetailsWithHistory" asp-route-id="@item.MaHocVien">Chi tiết</a>
+                    <a class="btn btn-primary btn-sm" asp-action="Edit" asp-route-id="@item.MaHocVien">Sửa</a>
+                    <a class="btn btn-warning btn-sm" asp-action="AssignClass" asp-route-id="@item.MaHocVien">Phân lớp</a>
+                    <form asp-action="Delete" asp-route-id="@item.MaHocVien" method="post" style="display:inline">
+                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa?');">Xóa</button>
+                    </form>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

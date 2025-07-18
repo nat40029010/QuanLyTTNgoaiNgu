@@ -1,0 +1,71 @@
+﻿@model QuanLyTTNgoaiNgu.Models.HOCVIEN
+
+@{
+    ViewData["Title"] = "Hồ sơ & lịch sử học viên";
+}
+
+<h2>@ViewData["Title"] – @Model.HoTen</h2>
+
+<div class="mb-4">
+    <h4>Thông tin cơ bản</h4>
+    <dl class="row">
+        <dt class="col-sm-3">@Html.DisplayNameFor(m => m.HoTen)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(m => m.HoTen)</dd>
+
+        <dt class="col-sm-3">@Html.DisplayNameFor(m => m.NgaySinh)</dt>
+        <dd class="col-sm-9">@Model.NgaySinh.ToString("dd/MM/yyyy")</dd>
+
+        <dt class="col-sm-3">@Html.DisplayNameFor(m => m.Email)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(m => m.Email)</dd>
+
+        <dt class="col-sm-3">@Html.DisplayNameFor(m => m.SoDienThoai)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(m => m.SoDienThoai)</dd>
+
+        <dt class="col-sm-3">@Html.DisplayNameFor(m => m.DiaChi)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(m => m.DiaChi)</dd>
+
+        <dt class="col-sm-3">@Html.DisplayNameFor(m => m.MaTaiKhoan)</dt>
+        <dd class="col-sm-9">@Html.DisplayFor(m => m.MaTaiKhoan)</dd>
+    </dl>
+</div>
+
+<h3>Lịch sử đăng ký khóa học</h3>
+<table class="table table-bordered">
+    <thead>
+        <tr><th>Mã lớp</th><th>Tên lớp</th><th>Ngày đăng ký</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var dk in (List<QuanLyTTNgoaiNgu.Models.PHIEUDANGKY>)ViewBag.LichSuDK)
+        {
+            <tr>
+                <td>@dk.MaLopHoc</td>
+                <td>@dk.LOPHOC.TenLop</td>
+                <td>@dk.NgayDangKy.ToString("dd/MM/yyyy")</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<h3 class="mt-4">Kết quả học tập & điểm danh</h3>
+<table class="table table-bordered">
+    <thead>
+        <tr><th>Mã lớp</th><th>Tên lớp</th><th>Điểm</th><th>Chuyên cần (%)</th></tr>
+    </thead>
+    <tbody>
+        @foreach (var kq in (List<QuanLyTTNgoaiNgu.Models.KETQUAHOCTAP>)ViewBag.KetQua)
+        {
+            <tr>
+                <td>@kq.MaLopHoc</td>
+                <td>@kq.LOPHOC.TenLop</td>
+                <td>@kq.Diem</td>
+                <td>@kq.ChuyenCan</td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<p>
+    <a asp-action="Edit" asp-route-id="@Model.MaHocVien" class="btn btn-primary">Sửa hồ sơ</a>
+    <a asp-action="AssignClass" asp-route-id="@Model.MaHocVien" class="btn btn-warning">Phân lớp</a>
+    <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+</p>

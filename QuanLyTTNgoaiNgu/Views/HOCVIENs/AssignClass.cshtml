@@ -1,0 +1,21 @@
+﻿@model QuanLyTTNgoaiNgu.Models.HOCVIEN
+
+@{
+    ViewData["Title"] = "Phân lớp học viên";
+}
+
+<h2>@ViewData["Title"] – @Model.HoTen</h2>
+
+<form asp-action="AssignClass" method="post">
+    <input type="hidden" asp-for="MaHocVien" />
+
+    <div class="form-group mb-3">
+        <label for="MaLopHoc">Chọn lớp học</label>
+        <select id="MaLopHoc" name="MaLopHoc" class="form-control" asp-items="ViewBag.LopHocList">
+            <option value="">-- Chọn lớp --</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-success">Phân lớp</button>
+    <a asp-action="Index" class="btn btn-secondary">Hủy</a>
+</form>
