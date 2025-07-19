@@ -1,47 +1,160 @@
 ﻿@model IEnumerable<QuanLyTTNgoaiNgu.Models.KHOAHOC>
-
 @{
-    ViewData["Title"] = "Index";
+    Layout = "_Layout";
 }
 
-<h1>Index</h1>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <title>Quản lý Khóa học</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.TenKhoaHoc)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MucHocPhi)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.MoTa)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.TenKhoaHoc)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MucHocPhi)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.MoTa)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.MaKhoaHoc">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.MaKhoaHoc">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.MaKhoaHoc">Delete</a>
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: #f8f9fa;
+            padding: 20px;
+        }
+
+        .header-bar {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+        }
+
+        .btn-add {
+            background: #28a745;
+        }
+
+            .btn-add:hover {
+                background: #218838;
+            }
+
+        .search-box input {
+            padding: 12px;
+            width: 300px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .card-desc {
+            font-size: 15px;
+            color: #555;
+            margin-bottom: 10px;
+        }
+
+        .card-fee {
+            font-size: 16px;
+            font-weight: bold;
+            color: #dc3545;
+            margin-bottom: 15px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-edit {
+            background: #ffc107;
+        }
+
+            .btn-edit:hover {
+                background: #e0a800;
+            }
+
+        .btn-delete {
+            background: #dc3545;
+        }
+
+            .btn-delete:hover {
+                background: #c82333;
+            }
+
+        .btn-lophoc {
+            background: #17a2b8;
+        }
+
+            .btn-lophoc:hover {
+                background: #138496;
+            }
+
+        .btn-info {
+            background: #17a2b8;
+        }
+
+            .btn-info:hover {
+                background: #138496;
+            }
+
+    </style>
+</head>
+<body>
+
+    <div class="header-bar">
+        <a asp-action="Create" class="btn btn-add">➕ Thêm khóa học</a>
+
+        <div class="search-box">
+            <input type="text" placeholder="Tìm kiếm khóa học..." />
+        </div>
+    </div>
+
+    <div class="card-container">
+        @foreach (var item in Model)
+        {
+            <div class="card">
+                <div class="card-title">@item.TenKhoaHoc</div>
+                <div class="card-desc">@item.MoTa</div>
+                <div class="card-fee">Học phí: @item.MucHocPhi.ToString("N0") VNĐ</div>
+
+                <div class="action-buttons">
+                    <a asp-action="Edit" asp-route-id="@item.MaKhoaHoc" class="btn btn-edit">Sửa</a>
+                    <a asp-action="Delete" asp-route-id="@item.MaKhoaHoc" class="btn btn-delete">Xóa</a>
+                    <a asp-controller="LOPHOCs" asp-action="Index" asp-route-khoaHocId="@item.MaKhoaHoc" class="btn btn-info">Quản lý lớp học</a>
+
+                </div>
+            </div>
+        }
+    </div>
+
+</body>
+</html>

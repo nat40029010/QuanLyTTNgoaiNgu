@@ -1,0 +1,139 @@
+﻿@model IEnumerable<QuanLyTTNgoaiNgu.Models.KETQUAHOCTAP>
+@{
+    Layout = "_Layout";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Kết quả học tập</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: linear-gradient(135deg, #4da0b0, #d39d38);
+            min-height: 100vh;
+         
+            justify-content: center;
+            align-items: center;
+        }
+
+        .box {
+            background: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 1000px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 28px;
+            color: #333;
+        }
+
+        .back-btn, .btn-export, .btn-phanloai, .btn-edit {
+            display: inline-block;
+            margin: 8px 5px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            font-weight: bold;
+            text-decoration: none;
+            color: white;
+            transition: 0.3s;
+        }
+
+        .back-btn {
+            background: #17a2b8;
+        }
+
+            .back-btn:hover {
+                background: #138496;
+            }
+
+        .btn-export {
+            background: #28a745;
+        }
+
+            .btn-export:hover {
+                background: #218838;
+            }
+
+        .btn-phanloai {
+            background: #ffc107;
+            color: #333;
+        }
+
+            .btn-phanloai:hover {
+                background: #e0a800;
+                color: #fff;
+            }
+
+        .btn-edit {
+            background: #ff6600;
+        }
+
+            .btn-edit:hover {
+                background: #e65c00;
+            }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        th {
+            background: #f2f2f2;
+            font-size: 18px;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <a asp-action="Lop" asp-route-maKhoaHoc="@ViewBag.MaKhoaHoc" class="back-btn">⬅ Quay lại chọn lớp</a>
+
+        <h2>Kết quả học tập</h2>
+
+        <div class="actions" style="text-align:center;">
+            <a asp-action="ExportScoreboard" asp-route-lopHocId="@ViewBag.LopHocId" class="btn-export">📤 Xuất bảng điểm</a>
+            <a asp-action="PhanLoai" asp-route-lopHocId="@ViewBag.LopHocId" class="btn-phanloai">📊 Phân loại học viên</a>
+        </div>
+
+        <table>
+            <thead>
+                <tr><th>Học viên</th><th>Điểm</th><th>Chuyên cần</th><th>Phân loại</th><th>Thao tác</th></tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    var loai = item.Diem >= 8 ? "Giỏi" : item.Diem >= 6.5 ? "Khá" : item.Diem >= 5 ? "Trung Bình" : "Yếu";
+                    <tr>
+                        <td>@item.HOCVIEN.HoTen</td>
+                        <td>@item.Diem</td>
+                        <td>@item.ChuyenCan</td>
+                        <td>@loai</td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.MaKetQua" class="btn-edit">✏️ Sửa</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

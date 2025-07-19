@@ -1,0 +1,17 @@
+﻿@model IEnumerable<QuanLyTTNgoaiNgu.Models.KHOAHOC>
+@{
+    Layout = "_Layout";
+}
+
+<div class="box" style="padding: 40px;">
+    <h2>Chọn Khóa Học</h2>
+    <div class="list">
+        @foreach (var item in Model)
+        {
+            <a asp-action="Lop" asp-route-maKhoaHoc="@item.MaKhoaHoc"
+               style="display: block; margin-bottom: 10px; padding: 15px; background: #17a2b8; color: #fff; border-radius: 8px; text-decoration: none; text-align: center; font-weight: bold;">
+                @item.TenKhoaHoc
+            </a>
+        }
+    </div>
+</div>

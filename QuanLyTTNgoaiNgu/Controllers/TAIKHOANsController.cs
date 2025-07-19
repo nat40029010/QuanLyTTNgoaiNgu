@@ -56,7 +56,17 @@ namespace QuanLyTTNgoaiNgu.Controllers
             await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal,
                 new AuthenticationProperties { IsPersistent = vm.GhiNho });
 
-            return RedirectToLocal(returnUrl);
+            if (!string.IsNullOrEmpty(returnUrl) && Url.IsLocalUrl(returnUrl))
+                return Redirect(returnUrl);
+
+            if (user.VaiTro == "Admin")
+                return RedirectToAction("Index", "GiaoDienAdmin");
+            if (user.VaiTro == "GiangVien")
+                return RedirectToAction("Index", "GiaoDienGiangVien");
+            if (user.VaiTro == "HocVien")
+                return RedirectToAction("Index", "GiaoDienHocVien");
+
+            return RedirectToAction("Index", "Home");
         }
 
         private IActionResult RedirectToLocal(string? returnUrl)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +11,7 @@ using QuanLyTTNgoaiNgu.Models;
 
 namespace QuanLyTTNgoaiNgu.Controllers
 {
+   // [Authorize(Roles = "Admin")]
     public class LOPHOCsController : Controller
     {
         private readonly QuanLyTTNgoaiNguContext _context;
@@ -19,152 +21,39 @@ namespace QuanLyTTNgoaiNgu.Controllers
             _context = context;
         }
 
-        // GET: LOPHOCs
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int khoaHocId)
         {
-            var quanLyTTNgoaiNguContext = _context.LOPHOC.Include(l => l.GIANGVIEN).Include(l => l.KHOAHOC);
-            return View(await quanLyTTNgoaiNguContext.ToListAsync());
-        }
-
-        // GET: LOPHOCs/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var lOPHOC = await _context.LOPHOC
+            var danhSachLop = await _context.LOPHOC
                 .Include(l => l.GIANGVIEN)
-                .Include(l => l.KHOAHOC)
-                .FirstOrDefaultAsync(m => m.MaLopHoc == id);
-            if (lOPHOC == null)
-            {
-                return NotFound();
-            }
+                .Where(l => l.MaKhoaHoc == khoaHocId)
+                .ToListAsync();
 
-            return View(lOPHOC);
+            ViewBag.MaKhoaHoc = khoaHocId;
+            var khoaHoc = await _context.KHOAHOC.FindAsync(khoaHocId);
+            ViewBag.TenKhoaHoc = khoaHoc?.TenKhoaHoc;
+
+            return View(danhSachLop);
         }
 
-        // GET: LOPHOCs/Create
-        public IActionResult Create()
+        public IActionResult Create(int maKhoaHoc)
         {
-            ViewData["MaGiangVien"] = new SelectList(_context.GIANGVIEN, "MaGiangVien", "ChuyenMon");
-            ViewData["MaKhoaHoc"] = new SelectList(_context.KHOAHOC, "MaKhoaHoc", "MoTa");
+            ViewBag.MaKhoaHoc = maKhoaHoc;
+            ViewBag.ListGiangVien = new SelectList(_context.GIANGVIEN, "MaGiangVien", "HoTen");
             return View();
         }
 
-        // POST: LOPHOCs/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MaLopHoc,TenLop,LichHoc,MaGiangVien,MaKhoaHoc")] LOPHOC lOPHOC)
+        public async Task<IActionResult> Create(LOPHOC lh)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(lOPHOC);
+                _context.Add(lh);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("LopHoc", "KHOAHOC", new { id = lh.MaKhoaHoc });
             }
-            ViewData["MaGiangVien"] = new SelectList(_context.GIANGVIEN, "MaGiangVien", "ChuyenMon", lOPHOC.MaGiangVien);
-            ViewData["MaKhoaHoc"] = new SelectList(_context.KHOAHOC, "MaKhoaHoc", "MoTa", lOPHOC.MaKhoaHoc);
-            return View(lOPHOC);
-        }
-
-        // GET: LOPHOCs/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var lOPHOC = await _context.LOPHOC.FindAsync(id);
-            if (lOPHOC == null)
-            {
-                return NotFound();
-            }
-            ViewData["MaGiangVien"] = new SelectList(_context.GIANGVIEN, "MaGiangVien", "ChuyenMon", lOPHOC.MaGiangVien);
-            ViewData["MaKhoaHoc"] = new SelectList(_context.KHOAHOC, "MaKhoaHoc", "MoTa", lOPHOC.MaKhoaHoc);
-            return View(lOPHOC);
-        }
-
-        // POST: LOPHOCs/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("MaLopHoc,TenLop,LichHoc,MaGiangVien,MaKhoaHoc")] LOPHOC lOPHOC)
-        {
-            if (id != lOPHOC.MaLopHoc)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(lOPHOC);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!LOPHOCExists(lOPHOC.MaLopHoc))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["MaGiangVien"] = new SelectList(_context.GIANGVIEN, "MaGiangVien", "ChuyenMon", lOPHOC.MaGiangVien);
-            ViewData["MaKhoaHoc"] = new SelectList(_context.KHOAHOC, "MaKhoaHoc", "MoTa", lOPHOC.MaKhoaHoc);
-            return View(lOPHOC);
-        }
-
-        // GET: LOPHOCs/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var lOPHOC = await _context.LOPHOC
-                .Include(l => l.GIANGVIEN)
-                .Include(l => l.KHOAHOC)
-                .FirstOrDefaultAsync(m => m.MaLopHoc == id);
-            if (lOPHOC == null)
-            {
-                return NotFound();
-            }
-
-            return View(lOPHOC);
-        }
-
-        // POST: LOPHOCs/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var lOPHOC = await _context.LOPHOC.FindAsync(id);
-            if (lOPHOC != null)
-            {
-                _context.LOPHOC.Remove(lOPHOC);
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
-
-        private bool LOPHOCExists(int id)
-        {
-            return _context.LOPHOC.Any(e => e.MaLopHoc == id);
+            ViewBag.ListGiangVien = new SelectList(_context.GIANGVIEN, "MaGiangVien", "HoTen", lh.MaGiangVien);
+            return View(lh);
         }
     }
 }

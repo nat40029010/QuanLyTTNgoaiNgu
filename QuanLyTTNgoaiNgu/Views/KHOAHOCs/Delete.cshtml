@@ -1,39 +1,81 @@
 ﻿@model QuanLyTTNgoaiNgu.Models.KHOAHOC
-
 @{
-    ViewData["Title"] = "Delete";
+    Layout = "_Layout";
 }
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <title>Xác nhận xóa khóa học</title>
+    <style>
+        body {
+            margin: 0;
+            background: linear-gradient(135deg, #4da0b0, #d39d38);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: Arial, sans-serif;
+        }
 
-<h1>Delete</h1>
+        .box {
+            background: #fff;
+            border-radius: 12px;
+            padding: 40px;
+            width: 450px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+            text-align: center;
+        }
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>KHOAHOC</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TenKhoaHoc)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TenKhoaHoc)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MucHocPhi)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MucHocPhi)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.MoTa)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.MoTa)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="MaKhoaHoc" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Back to List</a>
-    </form>
-</div>
+        h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border-radius: 8px;
+            border: none;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 8px;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+        }
+
+            .btn-danger:hover {
+                background: #c82333;
+            }
+
+        .btn-secondary {
+            background: #6c757d;
+        }
+
+            .btn-secondary:hover {
+                background: #5a6268;
+            }
+    </style>
+</head>
+<body>
+
+    <div class="box">
+        <h2>Bạn có chắc chắn muốn xóa?</h2>
+        <p><strong>@Model.TenKhoaHoc</strong></p>
+        <p>Mô tả: @Model.MoTa</p>
+        <p>Học phí: @Model.MucHocPhi VNĐ</p>
+
+        <form asp-action="Delete" method="post">
+            <input type="hidden" asp-for="MaKhoaHoc" />
+            <button type="submit" class="btn btn-danger">Xác nhận xóa</button>
+            <a asp-action="Index" class="btn btn-secondary">Quay lại</a>
+        </form>
+    </div>
+
+</body>
+</html>

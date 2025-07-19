@@ -1,49 +1,102 @@
 ﻿@model QuanLyTTNgoaiNgu.Models.KETQUAHOCTAP
-
 @{
-    ViewData["Title"] = "Edit";
+    Layout = "_Layout";
 }
 
-<h1>Edit</h1>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <title>Sửa kết quả học tập</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
 
-<h4>KETQUAHOCTAP</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        body {
+            margin: 0;
+            background: linear-gradient(135deg, #4da0b0, #d39d38);
+            height: 100vh;
+           
+            align-items: center;
+            justify-content: center;
+        }
+
+        .form-box {
+            background: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            width: 450px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #28a745;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+            button:hover {
+                background: #218838;
+            }
+
+        .back-btn {
+            display: block;
+            text-align: center;
+            margin-top: 15px;
+            text-decoration: none;
+            font-weight: bold;
+            color: #007bff;
+        }
+
+            .back-btn:hover {
+                text-decoration: underline;
+            }
+    </style>
+</head>
+<body>
+
+    <div class="form-box">
+        <h2>Sửa kết quả học tập</h2>
+        <form asp-action="Edit" method="post">
             <input type="hidden" asp-for="MaKetQua" />
-            <div class="form-group">
-                <label asp-for="Diem" class="control-label"></label>
-                <input asp-for="Diem" class="form-control" />
-                <span asp-validation-for="Diem" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ChuyenCan" class="control-label"></label>
-                <input asp-for="ChuyenCan" class="form-control" />
-                <span asp-validation-for="ChuyenCan" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MaHocVien" class="control-label"></label>
-                <select asp-for="MaHocVien" class="form-control" asp-items="ViewBag.MaHocVien"></select>
-                <span asp-validation-for="MaHocVien" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MaLopHoc" class="control-label"></label>
-                <select asp-for="MaLopHoc" class="form-control" asp-items="ViewBag.MaLopHoc"></select>
-                <span asp-validation-for="MaLopHoc" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
+            <input type="hidden" asp-for="MaLopHoc" />
+
+            <label>Học viên</label>
+            <select asp-for="MaHocVien" asp-items="ViewBag.HocViens"></select>
+
+            <label>Điểm</label>
+            <input asp-for="Diem" type="number" step="0.1" />
+
+            <label>Chuyên cần</label>
+            <input asp-for="ChuyenCan" type="number" step="0.1" />
+
+            <button type="submit">Cập nhật</button>
         </form>
+
+        <a asp-action="XemKetQua" asp-route-lopHocId="@Model.MaLopHoc" class="back-btn">⬅ Quay lại</a>
     </div>
-</div>
 
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+</body>
+</html>
