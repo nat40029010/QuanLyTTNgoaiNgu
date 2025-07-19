@@ -1,0 +1,24 @@
+﻿@model IEnumerable<QuanLyTTNgoaiNgu.Models.KETQUAHOCTAP>
+@{
+    Layout = "null";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Xuất bảng điểm</title>
+</head>
+<body style="padding:40px;font-family:Arial">
+    <h2>Bảng điểm chi tiết</h2>
+    <table border="1" cellpadding="10" cellspacing="0">
+        <thead><tr><th>Học viên</th><th>Điểm</th><th>Phân loại</th></tr></thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                var loai = item.Diem >= 8 ? "Giỏi" : item.Diem >= 6.5 ? "Khá" : item.Diem >= 5 ? "Trung Bình" : "Yếu";
+                <tr><td>@item.HOCVIEN.HoTen</td><td>@item.Diem</td><td>@loai</td></tr>
+            }
+        </tbody>
+    </table>
+</body>
+</html>

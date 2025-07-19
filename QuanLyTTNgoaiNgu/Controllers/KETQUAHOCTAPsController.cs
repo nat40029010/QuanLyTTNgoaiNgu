@@ -19,152 +19,92 @@ namespace QuanLyTTNgoaiNgu.Controllers
             _context = context;
         }
 
-        // GET: KETQUAHOCTAPs
-        public async Task<IActionResult> Index()
+        //public async Task<IActionResult> Index(int? lopHocId)
+        //{
+        //    var query = _context.KETQUAHOCTAP.Include(k => k.HOCVIEN).AsQueryable();
+
+        //    if (lopHocId.HasValue)
+        //    {
+        //        query = query.Where(k => k.MaLopHoc == lopHocId);
+        //    }
+
+        //    var list = await query.ToListAsync();
+        //    ViewBag.LopHocId = lopHocId;
+        //    return View(list);
+        //}
+
+        public IActionResult DanhSachKhoaHoc()
         {
-            var quanLyTTNgoaiNguContext = _context.KETQUAHOCTAP.Include(k => k.HOCVIEN).Include(k => k.LOPHOC);
-            return View(await quanLyTTNgoaiNguContext.ToListAsync());
+            var listKhoaHoc = _context.KHOAHOC.ToList();
+            return View(listKhoaHoc);
         }
 
-        // GET: KETQUAHOCTAPs/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public IActionResult Lop(int maKhoaHoc)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var kETQUAHOCTAP = await _context.KETQUAHOCTAP
-                .Include(k => k.HOCVIEN)
-                .Include(k => k.LOPHOC)
-                .FirstOrDefaultAsync(m => m.MaKetQua == id);
-            if (kETQUAHOCTAP == null)
-            {
-                return NotFound();
-            }
-
-            return View(kETQUAHOCTAP);
+            var listLop = _context.LOPHOC.Where(x => x.MaKhoaHoc == maKhoaHoc).ToList();
+            ViewBag.MaKhoaHoc = maKhoaHoc;
+            return View(listLop);
         }
 
-        // GET: KETQUAHOCTAPs/Create
-        public IActionResult Create()
+        public async Task<IActionResult> XemKetQua(int lopHocId)
         {
-            ViewData["MaHocVien"] = new SelectList(_context.HOCVIEN, "MaHocVien", "DiaChi");
-            ViewData["MaLopHoc"] = new SelectList(_context.Set<LOPHOC>(), "MaLopHoc", "TenLop");
+            var list = await _context.KETQUAHOCTAP.Include(x => x.HOCVIEN)
+                        .Where(x => x.MaLopHoc == lopHocId).ToListAsync();
+            return View(list);
+        }
+
+
+        public IActionResult Create(int lopHocId)
+        {
+            ViewBag.LopHocId = lopHocId;
+            ViewBag.HocViens = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.HOCVIEN, "MaHocVien", "HoTen");
             return View();
         }
 
-        // POST: KETQUAHOCTAPs/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("MaKetQua,Diem,ChuyenCan,MaHocVien,MaLopHoc")] KETQUAHOCTAP kETQUAHOCTAP)
+        public async Task<IActionResult> Create(KETQUAHOCTAP kq)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(kETQUAHOCTAP);
+                _context.Add(kq);
                 await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction("Index", new { lopHocId = kq.MaLopHoc });
             }
-            ViewData["MaHocVien"] = new SelectList(_context.HOCVIEN, "MaHocVien", "DiaChi", kETQUAHOCTAP.MaHocVien);
-            ViewData["MaLopHoc"] = new SelectList(_context.Set<LOPHOC>(), "MaLopHoc", "TenLop", kETQUAHOCTAP.MaLopHoc);
-            return View(kETQUAHOCTAP);
+            return View(kq);
         }
 
-        // GET: KETQUAHOCTAPs/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var kETQUAHOCTAP = await _context.KETQUAHOCTAP.FindAsync(id);
-            if (kETQUAHOCTAP == null)
-            {
-                return NotFound();
-            }
-            ViewData["MaHocVien"] = new SelectList(_context.HOCVIEN, "MaHocVien", "DiaChi", kETQUAHOCTAP.MaHocVien);
-            ViewData["MaLopHoc"] = new SelectList(_context.Set<LOPHOC>(), "MaLopHoc", "TenLop", kETQUAHOCTAP.MaLopHoc);
-            return View(kETQUAHOCTAP);
+            var kq = await _context.KETQUAHOCTAP.FindAsync(id);
+            if (kq == null) return NotFound();
+            ViewBag.HocViens = new Microsoft.AspNetCore.Mvc.Rendering.SelectList(_context.HOCVIEN, "MaHocVien", "HoTen", kq.MaHocVien);
+            return View(kq);
         }
 
-        // POST: KETQUAHOCTAPs/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("MaKetQua,Diem,ChuyenCan,MaHocVien,MaLopHoc")] KETQUAHOCTAP kETQUAHOCTAP)
+        public async Task<IActionResult> Edit(KETQUAHOCTAP kq)
         {
-            if (id != kETQUAHOCTAP.MaKetQua)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
-                try
-                {
-                    _context.Update(kETQUAHOCTAP);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!KETQUAHOCTAPExists(kETQUAHOCTAP.MaKetQua))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                _context.Update(kq);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index", new { lopHocId = kq.MaLopHoc });
             }
-            ViewData["MaHocVien"] = new SelectList(_context.HOCVIEN, "MaHocVien", "DiaChi", kETQUAHOCTAP.MaHocVien);
-            ViewData["MaLopHoc"] = new SelectList(_context.Set<LOPHOC>(), "MaLopHoc", "TenLop", kETQUAHOCTAP.MaLopHoc);
-            return View(kETQUAHOCTAP);
+            return View(kq);
         }
 
-        // GET: KETQUAHOCTAPs/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> LockScoreboard(int lopHocId)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var kETQUAHOCTAP = await _context.KETQUAHOCTAP
-                .Include(k => k.HOCVIEN)
-                .Include(k => k.LOPHOC)
-                .FirstOrDefaultAsync(m => m.MaKetQua == id);
-            if (kETQUAHOCTAP == null)
-            {
-                return NotFound();
-            }
-
-            return View(kETQUAHOCTAP);
-        }
-
-        // POST: KETQUAHOCTAPs/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var kETQUAHOCTAP = await _context.KETQUAHOCTAP.FindAsync(id);
-            if (kETQUAHOCTAP != null)
-            {
-                _context.KETQUAHOCTAP.Remove(kETQUAHOCTAP);
-            }
-
+            var list = await _context.KETQUAHOCTAP.Where(x => x.MaLopHoc == lopHocId).ToListAsync();
+            list.ForEach(x => x.ChuyenCan = -1); // ví dụ: gán -1 để đánh dấu khóa bảng điểm
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Index", new { lopHocId });
         }
 
-        private bool KETQUAHOCTAPExists(int id)
+        public async Task<IActionResult> ExportScoreboard(int lopHocId)
         {
-            return _context.KETQUAHOCTAP.Any(e => e.MaKetQua == id);
+            var list = await _context.KETQUAHOCTAP.Include(k => k.HOCVIEN).Where(k => k.MaLopHoc == lopHocId).ToListAsync();
+            return View("Export", list);
         }
     }
 }

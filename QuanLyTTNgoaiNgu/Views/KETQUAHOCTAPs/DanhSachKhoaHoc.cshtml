@@ -1,0 +1,7 @@
+﻿@model IEnumerable<KHOAHOC>
+<h2>Chọn khóa học</h2>
+@foreach (var item in Model)
+{
+    <a asp-action="Lop" asp-route-maKhoaHoc="@item.MaKhoaHoc">@item.TenKhoaHoc</a>
+    <br />
+}

@@ -1,0 +1,72 @@
+﻿@model IEnumerable<QuanLyTTNgoaiNgu.Models.KETQUAHOCTAP>
+@{
+    Layout = "null";
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <title>Phân loại học viên</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            background: linear-gradient(135deg, #4da0b0, #d39d38);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .box {
+            background: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 800px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>Phân loại học viên</h2>
+        <table>
+            <thead><tr><th>Học viên</th><th>Điểm</th><th>Phân loại</th></tr></thead>
+            <tbody>
+                @foreach (var item in Model.OrderByDescending(x => x.Diem))
+                {
+                    var loai = item.Diem >= 8 ? "Giỏi" : item.Diem >= 6.5 ? "Khá" : item.Diem >= 5 ? "Trung Bình" : "Yếu";
+                    <tr><td>@item.HOCVIEN.HoTen</td><td>@item.Diem</td><td>@loai</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

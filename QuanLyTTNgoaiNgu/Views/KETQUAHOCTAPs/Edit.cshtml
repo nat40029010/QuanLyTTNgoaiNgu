@@ -1,49 +1,111 @@
-﻿@model QuanLyTTNgoaiNgu.Models.KETQUAHOCTAP
-
+﻿@model IEnumerable<QuanLyTTNgoaiNgu.Models.KETQUAHOCTAP>
 @{
-    ViewData["Title"] = "Edit";
+    Layout = null;
 }
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <title>Quản lý kết quả học tập</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
 
-<h1>Edit</h1>
+        body {
+            margin: 0;
+            background: linear-gradient(135deg, #4da0b0, #d39d38);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-<h4>KETQUAHOCTAP</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="MaKetQua" />
-            <div class="form-group">
-                <label asp-for="Diem" class="control-label"></label>
-                <input asp-for="Diem" class="form-control" />
-                <span asp-validation-for="Diem" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ChuyenCan" class="control-label"></label>
-                <input asp-for="ChuyenCan" class="form-control" />
-                <span asp-validation-for="ChuyenCan" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MaHocVien" class="control-label"></label>
-                <select asp-for="MaHocVien" class="form-control" asp-items="ViewBag.MaHocVien"></select>
-                <span asp-validation-for="MaHocVien" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="MaLopHoc" class="control-label"></label>
-                <select asp-for="MaLopHoc" class="form-control" asp-items="ViewBag.MaLopHoc"></select>
-                <span asp-validation-for="MaLopHoc" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        .box {
+            background: #fff;
+            padding: 40px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 1000px;
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .actions {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+            .actions a {
+                display: inline-block;
+                margin: 5px;
+                padding: 12px 20px;
+                border-radius: 8px;
+                color: white;
+                text-decoration: none;
+                font-weight: bold;
+            }
+
+        .btn-add {
+            background: #28a745;
+        }
+
+        .btn-lock {
+            background: #ffc107;
+        }
+
+        .btn-export {
+            background: #17a2b8;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 12px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>Danh sách kết quả học tập</h2>
+        <div class="actions">
+            <a asp-action="Create" asp-route-lopHocId="@ViewBag.LopHocId" class="btn-add">Thêm kết quả</a>
+            <a asp-action="LockScoreboard" asp-route-lopHocId="@ViewBag.LopHocId" class="btn-lock">Khóa bảng điểm</a>
+            <a asp-action="ExportScoreboard" asp-route-lopHocId="@ViewBag.LopHocId" class="btn-export">Xuất bảng điểm</a>
+            <a asp-action="PhanLoai" asp-route-lopHocId="@ViewBag.LopHocId" class="btn-export">Xem phân loại</a>
+        </div>
+        <table>
+            <thead><tr><th>Học viên</th><th>Điểm</th><th>Chuyên cần</th><th>Phân loại</th><th>Thao tác</th></tr></thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    var loai = item.Diem >= 8 ? "Giỏi" : item.Diem >= 6.5 ? "Khá" : item.Diem >= 5 ? "Trung Bình" : "Yếu";
+                    <tr>
+                        <td>@item.HOCVIEN.HoTen</td>
+                        <td>@item.Diem</td>
+                        <td>@item.ChuyenCan</td>
+                        <td>@loai</td>
+                        <td><a asp-action="Edit" asp-route-id="@item.MaKetQua">Sửa</a></td>
+                    </tr>
+                }
+            </tbody>
+        </table>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+</body>
+</html>

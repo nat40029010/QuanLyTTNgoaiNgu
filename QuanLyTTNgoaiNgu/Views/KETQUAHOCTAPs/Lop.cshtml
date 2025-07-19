@@ -1,0 +1,8 @@
+﻿@model IEnumerable<LOPHOC>
+<h2>Chọn lớp học</h2>
+@foreach (var lop in Model)
+{
+    <a asp-action="XemKetQua" asp-route-lopHocId="@lop.MaLopHoc">@lop.TenLop</a>
+    <br />
+}
+
