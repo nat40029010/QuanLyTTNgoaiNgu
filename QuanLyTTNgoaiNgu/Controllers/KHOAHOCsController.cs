@@ -11,7 +11,7 @@ using QuanLyTTNgoaiNgu.Models;
 
 namespace QuanLyTTNgoaiNgu.Controllers
 {
-  //  [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class KHOAHOCsController : Controller
     {
         private readonly QuanLyTTNgoaiNguContext _context;

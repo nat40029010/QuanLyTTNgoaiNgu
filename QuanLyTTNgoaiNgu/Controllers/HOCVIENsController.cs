@@ -19,6 +19,11 @@ namespace QuanLyTTNgoaiNgu.Controllers
             _context = context;
         }
 
+        public IActionResult GiaoDienHocVien()
+        {
+            return View();
+        }
+
         // GET: HOCVIENs
         public async Task<IActionResult> Index()
         {

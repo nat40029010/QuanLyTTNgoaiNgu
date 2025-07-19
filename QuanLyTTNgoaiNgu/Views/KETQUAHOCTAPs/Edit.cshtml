@@ -1,13 +1,13 @@
-﻿@model IEnumerable<QuanLyTTNgoaiNgu.Models.KETQUAHOCTAP>
+﻿@model QuanLyTTNgoaiNgu.Models.KETQUAHOCTAP
 @{
-    Layout = null;
+    Layout = "_Layout";
 }
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="utf-8" />
-    <title>Quản lý kết quả học tập</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sửa kết quả học tập</title>
     <style>
         * {
             box-sizing: border-box;
@@ -17,95 +17,86 @@
         body {
             margin: 0;
             background: linear-gradient(135deg, #4da0b0, #d39d38);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
+            height: 100vh;
+           
             align-items: center;
+            justify-content: center;
         }
 
-        .box {
+        .form-box {
             background: #fff;
             padding: 40px;
             border-radius: 12px;
-            width: 90%;
-            max-width: 1000px;
+            width: 450px;
             box-shadow: 0 8px 16px rgba(0,0,0,0.2);
         }
 
         h2 {
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
-        .actions {
-            text-align: center;
-            margin-bottom: 20px;
+        input, select {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 16px;
         }
 
-            .actions a {
-                display: inline-block;
-                margin: 5px;
-                padding: 12px 20px;
-                border-radius: 8px;
-                color: white;
-                text-decoration: none;
-                font-weight: bold;
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #28a745;
+            color: white;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+            button:hover {
+                background: #218838;
             }
 
-        .btn-add {
-            background: #28a745;
-        }
-
-        .btn-lock {
-            background: #ffc107;
-        }
-
-        .btn-export {
-            background: #17a2b8;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-        }
-
-        th, td {
-            padding: 12px;
-            border-bottom: 1px solid #ddd;
+        .back-btn {
+            display: block;
             text-align: center;
+            margin-top: 15px;
+            text-decoration: none;
+            font-weight: bold;
+            color: #007bff;
         }
 
-        th {
-            background: #f2f2f2;
-        }
+            .back-btn:hover {
+                text-decoration: underline;
+            }
     </style>
 </head>
 <body>
-    <div class="box">
-        <h2>Danh sách kết quả học tập</h2>
-        <div class="actions">
-            <a asp-action="Create" asp-route-lopHocId="@ViewBag.LopHocId" class="btn-add">Thêm kết quả</a>
-            <a asp-action="LockScoreboard" asp-route-lopHocId="@ViewBag.LopHocId" class="btn-lock">Khóa bảng điểm</a>
-            <a asp-action="ExportScoreboard" asp-route-lopHocId="@ViewBag.LopHocId" class="btn-export">Xuất bảng điểm</a>
-            <a asp-action="PhanLoai" asp-route-lopHocId="@ViewBag.LopHocId" class="btn-export">Xem phân loại</a>
-        </div>
-        <table>
-            <thead><tr><th>Học viên</th><th>Điểm</th><th>Chuyên cần</th><th>Phân loại</th><th>Thao tác</th></tr></thead>
-            <tbody>
-                @foreach (var item in Model)
-                {
-                    var loai = item.Diem >= 8 ? "Giỏi" : item.Diem >= 6.5 ? "Khá" : item.Diem >= 5 ? "Trung Bình" : "Yếu";
-                    <tr>
-                        <td>@item.HOCVIEN.HoTen</td>
-                        <td>@item.Diem</td>
-                        <td>@item.ChuyenCan</td>
-                        <td>@loai</td>
-                        <td><a asp-action="Edit" asp-route-id="@item.MaKetQua">Sửa</a></td>
-                    </tr>
-                }
-            </tbody>
-        </table>
+
+    <div class="form-box">
+        <h2>Sửa kết quả học tập</h2>
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="MaKetQua" />
+            <input type="hidden" asp-for="MaLopHoc" />
+
+            <label>Học viên</label>
+            <select asp-for="MaHocVien" asp-items="ViewBag.HocViens"></select>
+
+            <label>Điểm</label>
+            <input asp-for="Diem" type="number" step="0.1" />
+
+            <label>Chuyên cần</label>
+            <input asp-for="ChuyenCan" type="number" step="0.1" />
+
+            <button type="submit">Cập nhật</button>
+        </form>
+
+        <a asp-action="XemKetQua" asp-route-lopHocId="@Model.MaLopHoc" class="back-btn">⬅ Quay lại</a>
     </div>
+
 </body>
 </html>
